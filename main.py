@@ -10,7 +10,13 @@ bot=TeleBot(api_token)
 @bot.message_handler(commands=["help","start"])
 def send_welcome(message):
     bot.send_message(message.chat.id,"Здравствуйте я бот для скачивания презентаций по ссылке")
-
+@bot.message_handler(commands=["history"])
+def send_history(message):
+    if message.chat.id == 380512347:
+        f=open("history.txt","r",encoding="utf8")
+        data=f.read()
+        bot.send_message(message.chat.id,data)
+        f.close()
 @bot.message_handler(content_types="text")
 def send_prezintacia(message):
     if message.text.split('https://', maxsplit = 1)[0] == '' or message.text.split('http://', maxsplit = 1)[0] == '':
@@ -25,7 +31,7 @@ def send_prezintacia(message):
             with open('history.txt', 'a') as h:
                 h.write(f'{datetime.datetime.now()}, {message.chat.username} \n')
             h.close()
-        except :
+        except:
             bot.send_message(message.chat.id,"Непредвиденная ошибка попробуйте ещё раз")
     else:
         bot.send_message(message.chat.id,"Формат ссылки не правильный")
